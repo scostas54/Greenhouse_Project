@@ -1,3 +1,4 @@
+//https://www.luisllamas.es/como-emplear-el-esp8266-como-servidor/
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
@@ -22,19 +23,20 @@ IPAddress ip(192, 168, 1, 200);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-WebServer server(80);
+WebServer server(80); //instanciamos un objeto de la clase Webserver y abrimos el puerto 80 para escuchar comunicaciones HTTP
 
 //ejemplo leds invernadero 192.168.1.200/led?rLed=50&gLed=50&bLed=50
+//ejemplo setpoints invernadero 192.168.1.200/setpoints?deactpump_interval=50&actpump_interval=50&tempThreshold=50&CO2Threshold=50&humiThreshold=50  
 
 // Funcion que se ejecutara en la URI '/'
 void handleRoot() 
 {
-   server.send(200, "text/plain", "Lights Server Working Correctly");
+   server.send(200, "text/plain", "Lights Server Working Correctly"); //envia respuesta a cliente en caso de funcionar correctamente ==> code = 200
 }
 
 void handleNotFound() 
 {
-   server.send(404, "text/plain", "Not found");
+   server.send(404, "text/plain", "Not found"); //envia respuesta a cliente en caso de funcionar incorrectamente ==> code = 404
 }
 
 void InitServer()
@@ -50,9 +52,13 @@ void InitServer()
    // Ruteo para '/'
    server.on("/", handleRoot);
  
-   // Definimos dos routeos
+   // Definimos dos routeos, la asociacion entre la URI de la peticion y la accion de callback que se ejecutara. 
    server.on("/led", HTTP_GET, ghSetLED);
    server.on("/led", HTTP_POST, ghSetLED);
+   
+   //Definimos dos nuevos routeos para fijar los setpoints
+   server.on("/setpoints", HTTP_GET, ghSetSetpoints);
+   server.on("/setpoints", HTTP_POST, ghSetSetpoints);
  
    server.onNotFound(handleNotFound);
  
@@ -98,30 +104,29 @@ void ConnectWiFi_AP(bool useStaticIP)
 }
 
 void WifiCheckConnection(){   
-// if WiFi is down, try reconnecting
-if (WiFi.status() != WL_CONNECTED) {
-  Serial.print(millis());
-  Serial.println("Reconnecting to WiFi...");
-  WiFi.disconnect();
-  WiFi.reconnect();
+   // if WiFi is down, try reconnecting
+   if (WiFi.status() != WL_CONNECTED) {
+     Serial.print(millis());
+     Serial.println("Reconnecting to WiFi...");
+     WiFi.disconnect();
+     WiFi.reconnect();
+   }
 }
-}
-
+// handleClient() se encarga de recibir las peticiones de los clientes y lanzar las funciones de callback asociadas en el ruteo
 void HandleClient(){
 
     server.handleClient();
 }
 
-// Funcion al recibir petición POST
+// Funcion al recibir petición /led POST
 void ghSetLED() 
 {
-   // mostrar por puerto serie
-   
+   // mostrar por puerto serie   
    rLed = server.arg(String("rLed")).toInt();
    gLed = server.arg(String("gLed")).toInt();
    bLed = server.arg(String("bLed")).toInt();
    Serial.println("rLed: " + String(rLed) + "; " + "gLed:" +  String(gLed) + "; " + "bLed: " +  String(bLed));
-
+   //Enviamos valores a los LED
    analogWrite(rLedPin, rLed);
    analogWrite(gLedPin, gLed);
    analogWrite(bLedPin, bLed);
@@ -130,6 +135,14 @@ void ghSetLED()
    analogWrite(gLedPin1, gLed);
    analogWrite(bLedPin1, bLed);
 
-   // devolver respuesta
+   // devolver respuesta al cliente
+   server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + String(", bLed: ") + server.arg(String("bLed")));
+}
+
+// Funcion al recibir petición /setpoints POST
+void ghSetSetpoints() 
+{
+
+   // devolver respuesta al cliente
    server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + String(", bLed: ") + server.arg(String("bLed")));
 }
