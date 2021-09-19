@@ -1,7 +1,7 @@
 #include <HTTPClient.h>
 
-void HHTP_send_value(String serverName, String apiKeyValue, String location_id, String fans, String RGB, float pumpInterval, float tempThreshold, 
-                     , float evapThreshold, float CO2Sensor, float HumiSensor, float TempSensor) { 
+void HHTP_send_value(String serverName, String apiKeyValue, String location_id, String fans, String RGB, unsigned long pumpInterval, int tempThreshold, 
+                     , int humiThreshold, int CO2Threshold, float CO2Sensor, float HumiSensor, float TempSensor) { 
   
   HTTPClient http;
   
@@ -13,8 +13,8 @@ void HHTP_send_value(String serverName, String apiKeyValue, String location_id, 
   
   // Prepare your HTTP POST request data
   String httpRequestData = "api_key=" + apiKeyValue + "&location_id=" + location_id + "&fans=" + fans + "&RGB=" + RGB + "&pump_interval=" + pumpInterval +
-                      + "&temp_threshold=" + tempThreshold + "&evap_threshold=" + evapThreshold + "&CO2sensor=" + CO2Sensor + "&Humisensor=" + HumiSensor + 
-                      + "&Tempsensor=" + String(TempSensor) + "";
+                      + "&temp_threshold=" + tempThreshold + "&evap_threshold=" + humiThreshold + "&CO2_threshold=" + CO2Threshold + "&CO2sensor=" + CO2Sensor +
+                      + "&Humisensor=" + HumiSensor + "&Tempsensor=" + String(TempSensor) + "";
   
   // You can comment the httpRequestData variable above
   // then, use the httpRequestData variable below (for testing purposes without the BME280 sensor)    
