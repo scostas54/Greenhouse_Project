@@ -8,7 +8,7 @@ byte s = 0; //to alternate pump switch
 
 unsigned long previousMillis_1 = 0;
 //unsigned long deactpump_interval =60000;
-//unsigned long actpump_interval = 73000;
+//unsigned long actpump_interval = 73000; El tiempo de activacion de la bomba es deactpump_interval - actpump_interval 
 
 void relay_config(byte pin_relay){
   pinMode(pin_relay, OUTPUT);
