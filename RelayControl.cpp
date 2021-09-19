@@ -7,8 +7,8 @@ byte RELAY_pump = 21;  // pin relay controls pump
 byte s = 0; //to alternate pump switch
 
 unsigned long previousMillis_1 = 0;
-unsigned long deactpump_interval =60000;
-unsigned long actpump_interval = 73000;
+//unsigned long deactpump_interval =60000;
+//unsigned long actpump_interval = 73000;
 
 void relay_config(byte pin_relay){
   pinMode(pin_relay, OUTPUT);
@@ -29,15 +29,16 @@ void relay_init(){
   relay_config(RELAY_pump);
 }
 
-void relay_control(float humidity, float temperature, int ppm_CO2_interior){
-  if(ppm_CO2_interior < 500 || temperature > 35){
+void relay_control(float humidity, float temperature, int ppm_CO2_interior, unsigned long deactpump_interval, unsigned long actpump_interval, int tempThreshold,
+                  , int CO2Threshold, int humiThreshold){
+  if(ppm_CO2_interior < CO2Threshold || temperature > tempThreshold){
     relay_activate(RELAY_fans);
   }
   else{
     relay_deactivate(RELAY_fans);
   }
     
-  if(humidity < 60){
+  if(humidity < humiThreshold){
       relay_activate(RELAY_humid);
     }
   else{
