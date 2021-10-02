@@ -65,7 +65,7 @@ void InitServer()
    server.begin();
    Serial.println("HTTP server started");
 }
-
+//--------------------------------------//
 void ConnectWiFi_STA()
 {
    Serial.println("");
@@ -112,15 +112,27 @@ void WifiCheckConnection(){
      WiFi.reconnect();
    }
 }
+//--------------------------------------//
 // handleClient() se encarga de recibir las peticiones de los clientes y lanzar las funciones de callback asociadas en el ruteo
 void HandleClient(){
-
     server.handleClient();
 }
-
+//--------------------------------------//
+int R_value(){
+   rLed = server.arg(String("rLed")).toInt();
+   return rLed;
+}
+int G_value(){
+   gLed = server.arg(String("gLed")).toInt();
+   return gLed;
+}
+int B_value(){
+   bLed = server.arg(String("bLed")).toInt();
+   return bLed;
+}
+//--------------------------------------//
 // Funcion al recibir petición /led POST
-void ghSetLED() 
-{
+void ghSetLED() {
    // mostrar por puerto serie   
    rLed = server.arg(String("rLed")).toInt();
    gLed = server.arg(String("gLed")).toInt();
@@ -139,10 +151,8 @@ void ghSetLED()
    server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + String(", bLed: ") + server.arg(String("bLed")));
 }
 
-// Funcion al recibir petición /setpoints POST
-void ghSetSetpoints() 
-{
-
+// Funcion al recibir petición /setpoints GET setea los parametros de threshold  de la bomba, sensores...
+void ghSetSetpoints() {
    // devolver respuesta al cliente
    server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + String(", bLed: ") + server.arg(String("bLed")));
 }
