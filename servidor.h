@@ -12,5 +12,6 @@ void InitServer();
 void handleNotFound();
 void handleRoot();
 void ghSetLED();
-void HandleClient();
-
+int R_value();
+int G_value();
+int B_value();
