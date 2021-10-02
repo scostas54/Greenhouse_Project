@@ -45,13 +45,23 @@ void loop() {
   unsigned long currentMillis = millis(); 
   //Waits for an HTTP request to set Light values  
   HandleClient();  
+  //Checks that the Wifi Connections is working, if not --> recconect 
   WifiCheckConnection();
+  //Returns the values RGB for the lamp
+  int R = R_value();
+  int G = G_value();
+  int B = B_value();
+  String RGB = String(String(R) + "; " +  String(G) + "; " + String(G));
+  //--------------------------------------//
   //Reading temperature or humidity takes about 250 milliseconds!
   float HumiInternal = read_DHT22_humidity();
   float TempInternal = read_DHT22_temperature();  
   // Reading CO2 values in ppm
   int CO2Internal = readCO2UART(); 
   //--------------------------------------//
+  //Function to control relays also returns a value of 0 if fans are deactivated and 1 if they are activated
+  int fans = relay_control(HumiInternal, TempInternal, CO2Internal, deactpump_interval, actpump_interval, tempThreshold, CO2Threshold, humiThreshold); 
+  
   //Check WiFi connection status to send values through HTTP
   if((WiFi.status()== WL_CONNECTED) && (currentMillis - previousMillis >= interval)){
     Serial.println("------------------------------");
@@ -59,17 +69,12 @@ void loop() {
     Serial.print((millis() - startTime) / 1000);
     Serial.println(" s");
     //Send sensors values
-    HHTP_send_value(serverName, apiKeyValue, location_id, *fans, *RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, *WaterPH, CO2Internal, HumiInternal,
+    HHTP_send_value(serverName, apiKeyValue, location_id, fans, RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, *WaterPH, CO2Internal, HumiInternal,
                     , TempInternal, *CO2External, *HumiExternal, *TempExternal)
-    //HHTP_send_value(serverName, apiKeyValue, location_id, "CO2", internal_CO2); // add Fans, humidifier, RGB, Pump_On_Off, CO2_ext
-    //HHTP_send_value(serverName, apiKeyValue, location_id, "Humidity", internal_humidity);
-    //HHTP_send_value(serverName, apiKeyValue, location_id, "Temperature", internal_temperature);
     previousMillis = currentMillis;
   }
   else {
     Serial.println("Interval not reached yet");
     Serial.println("------------------------------");
   }
-  //--------------------------------------// 
-  relay_control(HumiInternal, TempInternal, CO2Internal, deactpump_interval, actpump_interval, tempThreshold, CO2Threshold, humiThreshold); 
 }
