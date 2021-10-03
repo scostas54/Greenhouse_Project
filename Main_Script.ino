@@ -7,6 +7,7 @@
 #include "HTTP.h"
 #include "DHT22.h"
 #include "RelayControl.h"
+#include "TimeInfo.h"
 
 unsigned long startTime = millis();
 unsigned long previousMillis = 0;
@@ -20,6 +21,9 @@ int tempThreshold = 30;
 int CO2Threshold = 800;
 int humiThreshold = 60;
 
+//Parameter to set up day and night cycles (future set up through wifi)
+int threshold_hour = 21; 
+
 //Domain name and URL path where database data can be checked
 const char* serverName = "http://192.168.1.204/post-esp-greenhouse-data.php";
 //Keep this API Key value to be compatible with the PHP code provided in the project page. 
@@ -31,7 +35,8 @@ void setup() {
   Serial.begin(115200);
   delay(1000);  
   //Wifi connection
-  ConnectWiFi_STA();   
+  ConnectWiFi_STA();  
+  //Server Starts
   InitServer();
   //CO2 sensor connection
   InitCO2();
@@ -39,10 +44,22 @@ void setup() {
   DHT22_init();
   //Relays Set Up
   relay_init(); 
+  //Time Set Up
+  time_setup();  
 }
 
 void loop() {
-  unsigned long currentMillis = millis(); 
+  unsigned long currentMillis = millis();
+  int current_hour = current_hour(); //returns the current hour as integer
+  
+  //The next if has to be on the servidor.cpp file not here
+  if ((current_hour <= threshold_hour) && (current_hour >= (threshold_hour-12))){ //12h day cycle and 12h dark cycle
+    //Enter this part for day hours so parameters received through HTTP are accepted 
+  }
+  else {
+    //Enter this part for dark hours so parameters are setted to 0
+  }    
+  
   //Waits for an HTTP request to set Light values  
   HandleClient();  
   //Checks that the Wifi Connections is working, if not --> recconect 
@@ -65,12 +82,9 @@ void loop() {
   //Check WiFi connection status to send values through HTTP
   if((WiFi.status()== WL_CONNECTED) && (currentMillis - previousMillis >= interval)){
     Serial.println("------------------------------");
-    Serial.print("Time from start: ");
-    Serial.print((millis() - startTime) / 1000);
-    Serial.println(" s");
     //Send sensors values
     HHTP_send_value(serverName, apiKeyValue, location_id, fans, RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, *WaterPH, CO2Internal, HumiInternal,
-                    , TempInternal, *CO2External, *HumiExternal, *TempExternal)
+                    , TempInternal, *CO2External, *HumiExternal, *TempExternal);
     previousMillis = currentMillis;
   }
   else {
