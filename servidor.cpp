@@ -5,6 +5,7 @@
 #include <analogWrite.h>
 #include "servidor.h"
 
+
 int rLed = 0;
 int gLed = 0;
 int bLed = 0;
@@ -53,12 +54,12 @@ void InitServer()
    server.on("/", handleRoot);
  
    // Definimos dos routeos, la asociacion entre la URI de la peticion y la accion de callback que se ejecutara. 
-   server.on("/led", HTTP_GET, ghSetLED);
-   server.on("/led", HTTP_POST, ghSetLED);
+   server.on("/led", HTTP_GET, ghSetLED_Day);
+   server.on("/led", HTTP_POST, ghSetLED_Day);
    
-   //Definimos dos nuevos routeos para fijar los setpoints
+   /* //Definimos dos nuevos routeos para fijar los setpoints
    server.on("/setpoints", HTTP_GET, ghSetSetpoints);
-   server.on("/setpoints", HTTP_POST, ghSetSetpoints);
+   server.on("/setpoints", HTTP_POST, ghSetSetpoints); */
  
    server.onNotFound(handleNotFound);
  
@@ -118,6 +119,7 @@ void HandleClient(){
     server.handleClient();
 }
 //--------------------------------------//
+//Functions that return the RGB value to the Main_Script
 int R_value(){
    rLed = server.arg(String("rLed")).toInt();
    return rLed;
@@ -132,7 +134,7 @@ int B_value(){
 }
 //--------------------------------------//
 // Funcion al recibir petición /led POST
-void ghSetLED() {
+void ghSetLED_Day() {
    // mostrar por puerto serie   
    rLed = server.arg(String("rLed")).toInt();
    gLed = server.arg(String("gLed")).toInt();
@@ -148,11 +150,33 @@ void ghSetLED() {
    analogWrite(bLedPin1, bLed);
 
    // devolver respuesta al cliente
-   server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + String(", bLed: ") + server.arg(String("bLed")));
+   server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + 
+               + String(", bLed: ") + server.arg(String("bLed")));
 }
 
-// Funcion al recibir petición /setpoints GET setea los parametros de threshold  de la bomba, sensores...
-void ghSetSetpoints() {
-   // devolver respuesta al cliente
-   server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + String(", bLed: ") + server.arg(String("bLed")));
+//Funcion que se ejecuta de noche, cuando se necesita menos luz, en este caso se desabilitan los HTTP request
+void ghSetLED_Dark(){
+   analogWrite(rLedPin, 0);
+   analogWrite(gLedPin, 0);
+   analogWrite(bLedPin, 0);
+
+   analogWrite(rLedPin1, 0);
+   analogWrite(gLedPin1, 0);
+   analogWrite(bLedPin1, 0);
 }
+
+/* Funcion al recibir petición /setpoints GET setea los parametros de threshold de la bomba, sensores...
+void ghSetSetpoints() {
+   //
+   rLed = server.arg(String("rLed")).toInt();
+   gLed = server.arg(String("gLed")).toInt();
+   bLed = server.arg(String("bLed")).toInt();
+
+   
+   //devolver respuesta al cliente
+   server.send(200, "text/plain", String("PARAMETERS: ") + String("Deact Pump Interval: ") + server.arg(String("deactpump_interval")) + String(", Act Pump Interval: ") +
+               + server.arg(String("actpump_interval")) + String(", Temp Set Point: ") + server.arg(String("tempThreshold")) + String(", CO2 Set Point: ") + 
+               + server.arg(String("CO2Threshold")) + String(", Humidity Set Point: ") + server.arg(String("humiThreshold")));
+}
+
+*/
