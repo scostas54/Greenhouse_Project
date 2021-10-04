@@ -13,6 +13,10 @@ unsigned long startTime = millis();
 unsigned long previousMillis = 0;
 unsigned long interval = 50000; //Interval to register data into Database
 
+int R = 0;
+int G = 0;
+int B = 0;
+
 //Parameter to set up relays (future set up through wifi)
 unsigned long deactpump_interval = 60000;
 unsigned long actpump_interval = 73000; //Pump activation time is actpump_interval - deactpump_interval
@@ -59,6 +63,7 @@ void loop() {
     HandleClient();      
     //Checks that the Wifi Connections is working, if not --> recconect 
     WifiCheckConnection();
+    //HAY QUE ENCONTRAR UNA FORMA QUE UNA VEZ SE ACABE EL CICLO DE OSCURIDAD, SE VUELVA A PONER EL ULTIMO VALOR DEL CICLO DE LUZ GUARDADO
     //Returns the values RGB for the lamp
     int R = R_value();
     int G = G_value();
