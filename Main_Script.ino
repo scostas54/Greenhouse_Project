@@ -63,7 +63,7 @@ void loop() {
     int R = R_value();
     int G = G_value();
     int B = B_value();
-    String RGB = String(String(R) + "; " +  String(G) + "; " + String(G));
+    String RGB = String(String(R) + "; " +  String(G) + "; " + String(B));
   }
   else {
     //Enter this part for dark hours so parameters are setted to 0
@@ -77,6 +77,7 @@ void loop() {
   // Reading CO2 values in ppm
   int CO2Internal = readCO2UART(); 
   //--------------------------------------//
+  
   //Function to control relays also returns a value of 0 if fans are deactivated and 1 if they are activated
   int fans = relay_control(HumiInternal, TempInternal, CO2Internal, deactpump_interval, actpump_interval, tempThreshold, CO2Threshold, humiThreshold); 
   
