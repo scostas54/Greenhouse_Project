@@ -55,20 +55,21 @@ void loop() {
   //The next if has to be on the servidor.cpp file not here
   if ((current_hour <= threshold_hour) && (current_hour >= (threshold_hour-12))){ //12h day cycle and 12h dark cycle
     //Enter this part for day hours so parameters received through HTTP are accepted 
+    //Waits for an HTTP request to set Light values  
+    HandleClient();      
+    //Checks that the Wifi Connections is working, if not --> recconect 
+    WifiCheckConnection();
+    //Returns the values RGB for the lamp
+    int R = R_value();
+    int G = G_value();
+    int B = B_value();
+    String RGB = String(String(R) + "; " +  String(G) + "; " + String(G));
   }
   else {
     //Enter this part for dark hours so parameters are setted to 0
+    ghSetLED_Dark()
+    String RGB = String(String(0) + "; " +  String(0) + "; " + String(0));
   }    
-  
-  //Waits for an HTTP request to set Light values  
-  HandleClient();  
-  //Checks that the Wifi Connections is working, if not --> recconect 
-  WifiCheckConnection();
-  //Returns the values RGB for the lamp
-  int R = R_value();
-  int G = G_value();
-  int B = B_value();
-  String RGB = String(String(R) + "; " +  String(G) + "; " + String(G));
   //--------------------------------------//
   //Reading temperature or humidity takes about 250 milliseconds!
   float HumiInternal = read_DHT22_humidity();
