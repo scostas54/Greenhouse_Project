@@ -13,10 +13,6 @@ unsigned long startTime = millis();
 unsigned long previousMillis = 0;
 unsigned long interval = 50000; //Interval to register data into Database
 
-int R = 0;
-int G = 0;
-int B = 0;
-
 //Parameter to set up relays (future set up through wifi)
 unsigned long deactpump_interval = 60000;
 unsigned long actpump_interval = 73000; //Pump activation time is actpump_interval - deactpump_interval
@@ -62,13 +58,16 @@ void loop() {
     //Waits for an HTTP request to set Light values  
     HandleClient();      
     //Checks that the Wifi Connections is working, if not --> recconect 
-    WifiCheckConnection();
-    //HAY QUE ENCONTRAR UNA FORMA QUE UNA VEZ SE ACABE EL CICLO DE OSCURIDAD, SE VUELVA A PONER EL ULTIMO VALOR DEL CICLO DE LUZ GUARDADO
+    WifiCheckConnection();    
     //Returns the values RGB for the lamp
     int R = R_value();
     int G = G_value();
     int B = B_value();
     String RGB = String(String(R) + "; " +  String(G) + "; " + String(B));
+    //HAY QUE ENCONTRAR UNA FORMA QUE UNA VEZ SE ACABE EL CICLO DE OSCURIDAD, SE VUELVA A PONER EL ULTIMO VALOR DEL CICLO DE LUZ GUARDADO
+    //Si las funciones R_value(), G_value()... devuelven valor cero a pesar de haber fijado el valor previamente a traves de HTTP, 
+    //entonces hay que reformular esto ya que se destruye el valor de la variable al poco de hacer el HTTP request el usuario
+    ghSetLED_Last(int R, int G, int B) //Comprobar si serviría con esto o habría que añadir algún if    
   }
   else {
     //Enter this part for dark hours so parameters are setted to 0
