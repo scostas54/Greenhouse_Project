@@ -29,17 +29,6 @@ WebServer server(80); //instanciamos un objeto de la clase Webserver y abrimos e
 //ejemplo leds invernadero 192.168.1.200/led?rLed=50&gLed=50&bLed=50
 //ejemplo setpoints invernadero 192.168.1.200/setpoints?deactpump_interval=50&actpump_interval=50&tempThreshold=50&CO2Threshold=50&humiThreshold=50  
 
-// Funcion que se ejecutara en la URI '/'
-void handleRoot() 
-{
-   server.send(200, "text/plain", "Lights Server Working Correctly"); //envia respuesta a cliente en caso de funcionar correctamente ==> code = 200
-}
-
-void handleNotFound() 
-{
-   server.send(404, "text/plain", "Not found"); //envia respuesta a cliente en caso de funcionar incorrectamente ==> code = 404
-}
-
 void InitServer()
 {
   //Lights pins 
@@ -114,25 +103,23 @@ void WifiCheckConnection(){
    }
 }
 //--------------------------------------//
+
+// Funcion que se ejecutara en la URI '/'
+void handleRoot() 
+{
+   server.send(200, "text/plain", "Lights Server Working Correctly"); //envia respuesta a cliente en caso de funcionar correctamente ==> code = 200
+}
+
+void handleNotFound() 
+{
+   server.send(404, "text/plain", "Not found"); //envia respuesta a cliente en caso de funcionar incorrectamente ==> code = 404
+}
+
 // handleClient() se encarga de recibir las peticiones de los clientes y lanzar las funciones de callback asociadas en el ruteo
 void HandleClient(){
     server.handleClient();
 }
-//--------------------------------------//
-//Functions that return the RGB value to the Main_Script
-int R_value(){
-   rLed = server.arg(String("rLed")).toInt();
-   return rLed;
-}
-int G_value(){
-   gLed = server.arg(String("gLed")).toInt();
-   return gLed;
-}
-int B_value(){
-   bLed = server.arg(String("bLed")).toInt();
-   return bLed;
-}
-//--------------------------------------//
+
 // Funcion al recibir petición /led POST
 void ghSetLED_Day() {
    // mostrar por puerto serie   
@@ -165,6 +152,17 @@ void ghSetLED_Dark(){
    analogWrite(bLedPin1, 0);
 }
 
+// Funcion que setea las luces al ultimo valor que se introdujo antes de pasar por un ciclo de noche
+void ghSetLED_Last(int R, int G, int B){
+   analogWrite(rLedPin, R);
+   analogWrite(gLedPin, G);
+   analogWrite(bLedPin, B);
+
+   analogWrite(rLedPin1, R);
+   analogWrite(gLedPin1, G);
+   analogWrite(bLedPin1, B);
+}
+
 /* Funcion al recibir petición /setpoints GET setea los parametros de threshold de la bomba, sensores...
 void ghSetSetpoints() {
    //
@@ -180,3 +178,18 @@ void ghSetSetpoints() {
 }
 
 */
+//--------------------------------------//
+//Functions that return the RGB value to the Main_Script
+int R_value(){
+   rLed = server.arg(String("rLed")).toInt();
+   return rLed;
+}
+int G_value(){
+   gLed = server.arg(String("gLed")).toInt();
+   return gLed;
+}
+int B_value(){
+   bLed = server.arg(String("bLed")).toInt();
+   return bLed;
+}
+//--------------------------------------//
