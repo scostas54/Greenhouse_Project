@@ -89,8 +89,8 @@ void loop() {
   if((WiFi.status()== WL_CONNECTED) && (currentMillis - previousMillis >= interval)){
     Serial.println("------------------------------");
     //Send sensors values
-    HHTP_send_value(serverName, apiKeyValue, location_id, fans, RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, *WaterPH, CO2Internal, HumiInternal,
-                    , TempInternal, *CO2External, *HumiExternal, *TempExternal);
+    HHTP_send_value(serverName, apiKeyValue, location_id, fans, RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, CO2Internal, HumiInternal,
+                    , TempInternal);
     previousMillis = currentMillis;
   }
   else {
