@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 } 
 
 $sql = "SELECT id, location_id, fans, RGB, pump_interval, temp_threshold, humidity_threshold, CO2_threshold, temp_internal, humidity_internal,
-        , CO2_internal, reading_time FROM CO2 ORDER BY id DESC";
+        , CO2_internal, reading_time FROM measurements ORDER BY id DESC";
 
 echo '<head>
         <title><Measurements></title>
