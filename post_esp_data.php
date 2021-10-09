@@ -13,18 +13,18 @@ $api_key_value = "tPmAT5Ab3j7F9";
 $api_key= $location_id = $fans = $RGB = $pump_interval = $temp_threshold = $humidity_threshold = $CO2_threshold = $temp_internal = $humidity_internal = $CO2_internal = $value = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $api_key = measurements_input($_POST["api_key"]);
+    $api_key = test_input($_POST["api_key"]);
     if($api_key == $api_key_value) {
-        $location_id = measurements_input($_POST["location_id"]);
-        $fans = measurements_input($_POST["fans"]);
-        $RGB = measurements_input($_POST["RGB"]);
-        $pump_interval = measurements_input($_POST["pump_interval"]);
-        $temp_threshold = measurements_input($_POST["temp_threshold"]);
-        $humidity_threshold = measurements_input($_POST["humidity_threshold"]);
-        $CO2_threshold = measurements_input($_POST["CO2_threshold"]);
-        $temp_internal = measurements_input($_POST["temp_internal"]);
-        $humidity_internal = measurements_input($_POST["humidity_internal"]);
-        $CO2_internal = measurements_input($_POST["CO2_internal"]);
+        $location_id = test_input($_POST["location_id"]);
+        $fans = test_input($_POST["fans"]);
+        $RGB = test_input($_POST["RGB"]);
+        $pump_interval = test_input($_POST["pump_interval"]);
+        $temp_threshold = test_input($_POST["temp_threshold"]);
+        $humidity_threshold = test_input($_POST["humidity_threshold"]);
+        $CO2_threshold = test_input($_POST["CO2_threshold"]);
+        $temp_internal = test_input($_POST["temp_internal"]);
+        $humidity_internal = test_input($_POST["humidity_internal"]);
+        $CO2_internal = test_input($_POST["CO2_internal"]);
         
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
@@ -54,7 +54,7 @@ else {
     echo "No data posted with HTTP POST.";
 }
 
-function measurements_input($data) {
+function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
