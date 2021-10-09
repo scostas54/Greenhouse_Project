@@ -15,8 +15,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT id, location_id, fans, RGB, pump_interval, temp_threshold, humidity_threshold, CO2_threshold, temp_internal, humidity_internal,
-        , CO2_internal, reading_time FROM measurements ORDER BY id DESC";
+$sql = "SELECT id, location_id, fans, RGB, pump_interval, temp_threshold, humidity_threshold, CO2_threshold, temp_internal, humidity_internal, CO2_internal, reading_time FROM measurements ORDER BY id DESC";
 
 echo '<head>
         <title><Measurements></title>
@@ -26,15 +25,15 @@ echo '<table cellspacing="5" cellpadding="5">
       <tr> 
         <td>ID</td> 
         <td>Location ID</td> 
-        <td>Fans</td> 
+        <td>Fans(on/off)</td> 
         <td>RGB</td> 
         <td>Pump Interval(ms)</td>
-        <td>Temp Threshold</td>
-        <td>Humidity Threshold</td>
-        <td>CO2 Threshold</td>
-        <td>Temp Internal</td>
-        <td>Humidity Internal</td>
-        <td>CO2 Internal</td>
+        <td>Temp Threshold(ºC)</td>
+        <td>Humidity Threshold(%)</td>
+        <td>CO2 Threshold(ppm)</td>
+        <td>Temp Internal(ºC)</td>
+        <td>Humidity Internal(%)</td>
+        <td>CO2 Internal(ppm)</td>
         <td>Timestamp</td> 
       </tr>';
  
