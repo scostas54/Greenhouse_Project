@@ -11,15 +11,16 @@
 
 unsigned long startTime = millis();
 unsigned long previousMillis = 0;
-unsigned long interval = 50000; //Interval to register data into Database
+unsigned long interval = 60000; //Interval to register data into Database
 
 //Parameter to set up relays (future set up through wifi)
-unsigned long deactpump_interval = 60000;
-unsigned long actpump_interval = 73000; //Pump activation time is actpump_interval - deactpump_interval
+unsigned long deactpump_interval = 600000; //ms
+unsigned long actpump_interval = 613000; //Pump activation time is actpump_interval - deactpump_interval (ms)
 unsigned long pumpInterval = actpump_interval - deactpump_interval;
 int tempThreshold = 30; 
 int CO2Threshold = 800;
 int humiThreshold = 60;
+String RGB = "";
 
 //Parameter to set up day and night cycles (future set up through wifi)
 int threshold_hour = 21; 
@@ -45,17 +46,19 @@ void setup() {
   //Relays Set Up
   relay_init(); 
   //Time Set Up
-  time_setup();  
+  time_setup();   
 }
 
 void loop() {
   unsigned long currentMillis = millis();
-  int current_hour = current_hour(); //returns the current hour as integer
-  
+  int day_hour = current_hour(); //returns the current hour as integer
+
   //The next if has to be on the servidor.cpp file not here
-  if ((current_hour <= threshold_hour) && (current_hour >= (threshold_hour-12))){ //12h day cycle and 12h dark cycle
+  if ((day_hour <= threshold_hour) && (day_hour >= (threshold_hour-12))){ //12h day cycle and 12h dark cycle
     //Enter this part for day hours so parameters received through HTTP are accepted 
     //Waits for an HTTP request to set Light values  
+    Serial.println("------------------------------");
+    Serial.println("Into day cycle");
     HandleClient();      
     //Checks that the Wifi Connections is working, if not --> recconect 
     WifiCheckConnection();    
@@ -63,16 +66,18 @@ void loop() {
     int R = R_value();
     int G = G_value();
     int B = B_value();
-    String RGB = String(String(R) + "; " +  String(G) + "; " + String(B));
+    RGB = String(String(R) + "; " +  String(G) + "; " + String(B));
     //HAY QUE ENCONTRAR UNA FORMA QUE UNA VEZ SE ACABE EL CICLO DE OSCURIDAD, SE VUELVA A PONER EL ULTIMO VALOR DEL CICLO DE LUZ GUARDADO
     //Si las funciones R_value(), G_value()... devuelven valor cero a pesar de haber fijado el valor previamente a traves de HTTP, 
     //entonces hay que reformular esto ya que se destruye el valor de la variable al poco de hacer el HTTP request el usuario
-    ghSetLED_Last(int R, int G, int B) //Comprobar si serviría con esto o habría que añadir algún if    
+    ghSetLED_Last(R, G, B); //Comprobar si serviría con esto o habría que añadir algún if    
   }
   else {
     //Enter this part for dark hours so parameters are setted to 0
-    ghSetLED_Dark()
-    String RGB = String(String(0) + "; " +  String(0) + "; " + String(0));
+    Serial.println("------------------------------");
+    Serial.println("Into night cycle");
+    ghSetLED_Dark();
+    RGB = String(String(0) + "; " +  String(0) + "; " + String(0));
   }    
   //--------------------------------------//
   //Reading temperature or humidity takes about 250 milliseconds!
@@ -88,9 +93,9 @@ void loop() {
   //Check WiFi connection status to send values through HTTP
   if((WiFi.status()== WL_CONNECTED) && (currentMillis - previousMillis >= interval)){
     Serial.println("------------------------------");
+    Serial.println("Sending Values Through HTTP");
     //Send sensors values
-    HHTP_send_value(serverName, apiKeyValue, location_id, fans, RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, CO2Internal, HumiInternal,
-                    , TempInternal);
+    HHTP_send_value(serverName, apiKeyValue, location_id, fans, RGB, pumpInterval, tempThreshold, humiThreshold, CO2Threshold, TempInternal, HumiInternal, CO2Internal);
     previousMillis = currentMillis;
   }
   else {
