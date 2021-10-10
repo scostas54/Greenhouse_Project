@@ -29,23 +29,14 @@ void relay_init(){
   relay_config(RELAY_pump);
 }
 
-int relay_control(float internal_humidity, float internal_temperature, int internal_CO2, unsigned long deactpump_interval, unsigned long actpump_interval, int tempThreshold,
-                  , int CO2Threshold, int humiThreshold){
-  
-  if(internal_CO2 =< CO2Threshold || internal_temperature >= tempThreshold){
-    relay_activate(RELAY_fans);
-    return 1;
-  }
-  else{
-    relay_deactivate(RELAY_fans);
-    return 0;
-  }
-    
-  if(internal_humidity < humiThreshold){
-      relay_activate(RELAY_humid);
+int relay_control(float internal_humidity, float internal_temperature, int internal_CO2, unsigned long deactpump_interval, unsigned long actpump_interval,
+ int tempThreshold, int CO2Threshold, int humiThreshold){
+   
+  if(internal_humidity <= humiThreshold){
+      relay_activate(RELAY_humid);  
     }
   else{
-    relay_deactivate(RELAY_humid);
+    relay_deactivate(RELAY_humid);    
   } 
     
   //pump control every interval activated
@@ -57,5 +48,14 @@ int relay_control(float internal_humidity, float internal_temperature, int inter
      relay_deactivate(RELAY_pump);
      previousMillis_1 = millis();
      s = 0;  
+  }
+
+ if(internal_CO2 <= CO2Threshold || internal_temperature >= tempThreshold){
+    relay_activate(RELAY_fans);
+    return 1;
+  }
+  else{
+    relay_deactivate(RELAY_fans);
+    return 0;
   }
 }
