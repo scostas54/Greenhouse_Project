@@ -1,8 +1,8 @@
+#include <Arduino.h>
 #include <HTTPClient.h>
 
 void HHTP_send_value(String serverName, String apiKeyValue, String location_id, int fans, String RGB, unsigned long pumpInterval, int tempThreshold, 
-                     , int humiThreshold, int CO2Threshold, float WaterPH, float CO2Internal, float HumiInternal, float TempInternal, float CO2External, 
-                     , float HumiExternal, float TempExternal) { 
+                     int humiThreshold, int CO2Threshold, float TempInternal, float HumiInternal, int CO2Internal) { 
   
   HTTPClient http;
   
@@ -13,10 +13,9 @@ void HHTP_send_value(String serverName, String apiKeyValue, String location_id, 
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   
   // Prepare your HTTP POST request data
-  String httpRequestData = "api_key=" + apiKeyValue + "&location_id=" + location_id + "&fans=" + fans + "&RGB=" + RGB + "&pump_interval=" + pumpInterval +
-                      + "&temp_threshold=" + tempThreshold + "&humi_threshold=" + humiThreshold + "&CO2_threshold=" + CO2Threshold + "&WaterPH=" + WaterPH +
-                      + "&CO2Internal=" + CO2Internal + "&HumiInternal=" + HumiInternal + "&TempInternal=" + String(TempInternal) + "&CO2External=" + CO2External + 
-                      + "&HumiExternal=" + HumiExternal + "&TempExternal=" + String(TempExternal) + "";
+  String httpRequestData = "api_key=" + apiKeyValue + "&location_id=" + location_id + "&fans=" + String(fans) + "&RGB=" + RGB + "&pump_interval=" + String(pumpInterval) +
+                      "&temp_threshold=" + String(tempThreshold) + "&humidity_threshold=" + String(humiThreshold) + "&CO2_threshold=" + String(CO2Threshold) +
+                      "&temp_internal=" + String(TempInternal) + "&humidity_internal=" + String(HumiInternal) + "&CO2_internal=" + String(CO2Internal) + "";
   
   // You can comment the httpRequestData variable above
   // then, use the httpRequestData variable below (for testing purposes without the BME280 sensor)    
