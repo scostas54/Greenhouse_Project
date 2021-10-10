@@ -29,6 +29,17 @@ WebServer server(80); //instanciamos un objeto de la clase Webserver y abrimos e
 //ejemplo leds invernadero 192.168.1.200/led?rLed=50&gLed=50&bLed=50
 //ejemplo setpoints invernadero 192.168.1.200/setpoints?deactpump_interval=50&actpump_interval=50&tempThreshold=50&CO2Threshold=50&humiThreshold=50  
 
+// Funcion que se ejecutara en la URI '/'
+void handleRoot() 
+{
+   server.send(200, "text/plain", "Lights Server Working Correctly"); //envia respuesta a cliente en caso de funcionar correctamente ==> code = 200
+}
+
+void handleNotFound() 
+{
+   server.send(404, "text/plain", "Not found"); //envia respuesta a cliente en caso de funcionar incorrectamente ==> code = 404
+}
+
 void InitServer()
 {
   //Lights pins 
@@ -104,17 +115,6 @@ void WifiCheckConnection(){
 }
 //--------------------------------------//
 
-// Funcion que se ejecutara en la URI '/'
-void handleRoot() 
-{
-   server.send(200, "text/plain", "Lights Server Working Correctly"); //envia respuesta a cliente en caso de funcionar correctamente ==> code = 200
-}
-
-void handleNotFound() 
-{
-   server.send(404, "text/plain", "Not found"); //envia respuesta a cliente en caso de funcionar incorrectamente ==> code = 404
-}
-
 // handleClient() se encarga de recibir las peticiones de los clientes y lanzar las funciones de callback asociadas en el ruteo
 void HandleClient(){
     server.handleClient();
@@ -138,7 +138,7 @@ void ghSetLED_Day() {
 
    // devolver respuesta al cliente
    server.send(200, "text/plain", String("PARAMETROS: ") + String("rLed: ") + server.arg(String("rLed")) + String(", gLed: ") + server.arg(String("gLed")) + 
-               + String(", bLed: ") + server.arg(String("bLed")));
+               String(", bLed: ") + server.arg(String("bLed")));
 }
 
 //Funcion que se ejecuta de noche, cuando se necesita menos luz, en este caso se desabilitan los HTTP request
