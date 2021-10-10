@@ -1,7 +1,8 @@
 #include "time.h"
+#include <WiFi.h>
 
-const char *ssid = "MIWIFI_2G_GA3v";
-const char *password = "reycostas69";
+//const char *ssid = "MIWIFI_2G_GA3v";
+//const char *password = "reycostas69";
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 46800; // When you extract just the hour it is delayed 12h, I dont know why
